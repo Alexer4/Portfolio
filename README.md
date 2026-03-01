@@ -10,7 +10,7 @@
 
 ## 🌐 Live Portfolio
 
-👉 **[alexandredziubate.github.io](https://alexandredziubate.github.io)**
+👉 **[alexandredziubate.github.io](https://69a46781e906bcab9f79cc51--dziubate-portfolio.netlify.app/#about)**
 
 ---
 
@@ -22,7 +22,7 @@ This repo contains the source code for my personal portfolio website — built w
 
 ## 🚀 Featured Projects
 
-### 🧠 [XAND.AI](https://github.com/YOUR_USERNAME/xand-ai)
+### 🧠 [XAND.AI](https://github.com/Alexer4/XAND-AI-V0.1)
 > Personalized AI assistant with fine-tuning
 
 A custom AI chatbot built on **Mistral** with a fine-tuning pipeline designed to learn from user behavior over time. The system delivers personalized feedback based on daily routines and interaction history — moving beyond generic LLM responses toward genuine adaptive intelligence.
