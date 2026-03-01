@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alexandre Dziubate — AI Developer & Evaluator</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #060910;
+    --bg2: #0c1220;
+    --surface: #101828;
+    --border: #1e2d45;
+    --accent: #00d4ff;
+    --accent2: #7b5ea7;
+    --accent3: #00ffaa;
+    --text: #e8edf5;
+    --muted: #6b7a99;
+    --mono: 'Space Mono', monospace;
+    --sans: 'Syne', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: var(--sans); overflow-x: hidden; }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 0; opacity: 0.4;
+  }
+
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none; z-index: 0;
+  }
+
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 60px;
+    background: rgba(6,9,16,0.85); backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo { font-family: var(--mono); font-size: 14px; color: var(--accent); letter-spacing: 0.05em; }
+  .nav-links { display: flex; gap: 40px; list-style: none; }
+  .nav-links a { font-family: var(--mono); font-size: 12px; color: var(--muted); text-decoration: none; letter-spacing: 0.1em; text-transform: uppercase; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--accent); }
+
+  .hero {
+    position: relative; z-index: 1;
+    min-height: 100vh; display: flex; flex-direction: column; justify-content: center;
+    padding: 120px 60px 80px; max-width: 1100px;
+  }
+  .hero-tag { font-family: var(--mono); font-size: 12px; color: var(--accent); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 24px; display: flex; align-items: center; gap: 12px; }
+  .hero-tag::before { content: ''; width: 32px; height: 1px; background: var(--accent); }
+  .hero h1 { font-size: clamp(3rem, 7vw, 6rem); font-weight: 800; line-height: 0.95; letter-spacing: -0.02em; margin-bottom: 12px; }
+  .hero h1 span { display: block; background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 60%, var(--accent3) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .hero-sub { font-size: clamp(1rem, 2vw, 1.3rem); color: var(--muted); max-width: 540px; line-height: 1.7; margin: 28px 0 48px; font-weight: 400; }
+  .hero-ctas { display: flex; gap: 16px; flex-wrap: wrap; }
+
+  .btn-primary { font-family: var(--mono); font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; padding: 14px 32px; background: var(--accent); color: var(--bg); border: none; cursor: pointer; text-decoration: none; font-weight: 700; transition: all 0.2s; clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px)); }
+  .btn-primary:hover { background: var(--accent3); transform: translateY(-2px); }
+  .btn-secondary { font-family: var(--mono); font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; padding: 14px 32px; background: transparent; color: var(--accent); border: 1px solid var(--accent); cursor: pointer; text-decoration: none; transition: all 0.2s; clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px)); }
+  .btn-secondary:hover { background: rgba(0,212,255,0.08); transform: translateY(-2px); }
+
+  .scroll-hint { position: absolute; bottom: 40px; left: 60px; display: flex; align-items: center; gap: 12px; font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: 0.15em; text-transform: uppercase; }
+  .scroll-line { width: 1px; height: 48px; background: linear-gradient(to bottom, transparent, var(--accent)); animation: scrollPulse 2s infinite; }
+  @keyframes scrollPulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+
+  section { position: relative; z-index: 1; padding: 100px 60px; max-width: 1100px; margin: 0 auto; }
+  .section-label { font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: 0.25em; text-transform: uppercase; margin-bottom: 16px; display: flex; align-items: center; gap: 12px; }
+  .section-label::after { content: ''; flex: 1; max-width: 60px; height: 1px; background: var(--accent); }
+  .section-title { font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; letter-spacing: -0.02em; margin-bottom: 60px; line-height: 1.1; }
+
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
+  .about-text p { color: var(--muted); line-height: 1.8; margin-bottom: 20px; font-size: 1rem; }
+  .about-text p strong { color: var(--text); font-weight: 600; }
+  .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .stat-card { background: var(--surface); border: 1px solid var(--border); padding: 24px 20px; position: relative; overflow: hidden; }
+  .stat-card::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%; background: var(--accent); }
+  .stat-number { font-size: 2.2rem; font-weight: 800; color: var(--accent); line-height: 1; margin-bottom: 6px; }
+  .stat-label { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+
+  .projects-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .project-card { background: var(--surface); border: 1px solid var(--border); padding: 36px; position: relative; overflow: hidden; transition: all 0.3s; cursor: default; }
+  .project-card:hover { border-color: var(--accent); transform: translateY(-4px); box-shadow: 0 20px 60px rgba(0,212,255,0.08); }
+  .project-card.featured { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+  .project-card::after { content: ''; position: absolute; top: 0; right: 0; width: 100px; height: 100px; background: radial-gradient(circle at top right, rgba(0,212,255,0.06), transparent 70%); }
+  .project-tag { font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); background: rgba(0,212,255,0.08); padding: 4px 12px; display: inline-block; margin-bottom: 20px; border: 1px solid rgba(0,212,255,0.2); }
+  .project-title { font-size: 1.6rem; font-weight: 800; margin-bottom: 14px; letter-spacing: -0.01em; }
+  .project-desc { color: var(--muted); line-height: 1.7; font-size: 0.95rem; margin-bottom: 24px; }
+  .project-stack { display: flex; flex-wrap: wrap; gap: 8px; }
+  .stack-tag { font-family: var(--mono); font-size: 11px; color: var(--muted); border: 1px solid var(--border); padding: 4px 10px; letter-spacing: 0.05em; }
+  .project-visual { background: var(--bg2); border: 1px solid var(--border); height: 200px; display: flex; align-items: center; justify-content: center; font-size: 4rem; position: relative; overflow: hidden; }
+  .project-visual::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at center, rgba(123,94,167,0.15), transparent 70%); }
+
+  .skills-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .skill-group { background: var(--surface); border: 1px solid var(--border); padding: 28px; }
+  .skill-group-title { font-family: var(--mono); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+  .skill-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; font-size: 0.9rem; }
+  .skill-bar-wrap { width: 80px; height: 3px; background: var(--border); position: relative; }
+  .skill-bar { position: absolute; left: 0; top: 0; height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); }
+
+  .certs-list { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .cert-item { background: var(--surface); border: 1px solid var(--border); padding: 20px 24px; display: flex; align-items: center; gap: 16px; transition: border-color 0.2s; }
+  .cert-item:hover { border-color: var(--accent); }
+  .cert-icon { font-size: 1.5rem; flex-shrink: 0; }
+  .cert-name { font-size: 0.9rem; font-weight: 600; margin-bottom: 4px; }
+  .cert-org { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: 0.05em; }
+
+  .contact-wrap { background: var(--surface); border: 1px solid var(--border); padding: 60px; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; position: relative; overflow: hidden; }
+  .contact-wrap::before { content: ''; position: absolute; top: -50%; right: -20%; width: 400px; height: 400px; background: radial-gradient(circle, rgba(0,212,255,0.05), transparent 70%); pointer-events: none; }
+  .contact-title { font-size: 2.4rem; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 16px; }
+  .contact-title span { color: var(--accent); }
+  .contact-sub { color: var(--muted); line-height: 1.7; font-size: 0.95rem; }
+  .contact-links { display: flex; flex-direction: column; gap: 16px; }
+  .contact-link { display: flex; align-items: center; gap: 16px; font-family: var(--mono); font-size: 13px; color: var(--text); text-decoration: none; padding: 16px 20px; border: 1px solid var(--border); transition: all 0.2s; letter-spacing: 0.05em; }
+  .contact-link:hover { border-color: var(--accent); color: var(--accent); background: rgba(0,212,255,0.04); }
+  .contact-link-icon { font-size: 1.1rem; width: 24px; text-align: center; }
+
+  footer { position: relative; z-index: 1; border-top: 1px solid var(--border); padding: 24px 60px; display: flex; align-items: center; justify-content: space-between; font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: 0.08em; }
+  .divider { position: relative; z-index: 1; height: 1px; background: linear-gradient(90deg, transparent, var(--border), transparent); margin: 0 60px; }
+
+  .fade-in { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+  .cursor-glow { position: fixed; width: 300px; height: 300px; border-radius: 50%; background: radial-gradient(circle, rgba(0,212,255,0.06), transparent 70%); pointer-events: none; z-index: 0; transform: translate(-50%, -50%); transition: transform 0.1s; }
+
+  @media (max-width: 768px) {
+    nav { padding: 16px 24px; }
+    .hero { padding: 100px 24px 60px; }
+    section { padding: 60px 24px; }
+    .about-grid, .projects-grid, .skills-grid, .certs-list, .contact-wrap { grid-template-columns: 1fr; }
+    .project-card.featured { grid-column: 1; display: block; }
+    footer { flex-direction: column; gap: 8px; padding: 24px; }
+    .divider { margin: 0 24px; }
+    .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor-glow" id="cursorGlow"></div>
+
+<nav>
+  <div class="nav-logo">_alexandre.dziubate</div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#certs">Certs</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<div class="hero" id="home">
+  <div class="hero-tag">Available for AI Evaluator roles</div>
+  <h1>Alexandre<br><span>Dziubate</span></h1>
+  <p class="hero-sub">AI Developer, Front-end Engineer &amp; Machine Learning student. Building XAND.AI — a personalized fine-tuned assistant that learns from you.</p>
+  <div class="hero-ctas">
+    <a href="#projects" class="btn-primary">View Projects</a>
+    <a href="#contact" class="btn-secondary">Get in Touch</a>
+  </div>
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    Scroll to explore
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<section id="about">
+  <div class="section-label">01 — About</div>
+  <h2 class="section-title fade-in">Who I Am</h2>
+  <div class="about-grid">
+    <div class="about-text fade-in">
+      <p>I'm a developer and AI enthusiast from Brazil, currently specializing in <strong>Machine Learning and MLOps</strong> through Andrew Ng's curriculum at DeepLearning.AI.</p>
+      <p>I built <strong>XAND.AI</strong> — a fine-tuned AI assistant using Mistral that adapts to user behavior and delivers personalized feedback. It started as a personal productivity tool and evolved into a full research project on AI personalization.</p>
+      <p>Beyond coding, I was part of Brazil's <strong>High Abilities/Giftedness Program</strong> and consistently ranked in the <strong>top 3</strong> on statewide assessments — which tells you something about how I approach problems.</p>
+    </div>
+    <div class="stat-grid fade-in">
+      <div class="stat-card"><div class="stat-number">C1</div><div class="stat-label">English Reading<br>(EF SET 2025)</div></div>
+      <div class="stat-card"><div class="stat-number">Top 3</div><div class="stat-label">State Assessment<br>Rankings</div></div>
+      <div class="stat-card"><div class="stat-number">2+</div><div class="stat-label">AI Projects<br>Built</div></div>
+      <div class="stat-card"><div class="stat-number">7+</div><div class="stat-label">Tech<br>Certifications</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section id="projects">
+  <div class="section-label">02 — Projects</div>
+  <h2 class="section-title fade-in">What I've Built</h2>
+  <div class="projects-grid">
+    <div class="project-card featured fade-in">
+      <div>
+        <div class="project-tag">🧠 Featured Project — AI</div>
+        <h3 class="project-title">XAND.AI</h3>
+        <p class="project-desc">A personalized AI assistant with fine-tuning that learns from the user's behavior over time. The system delivers context-aware feedback based on daily routines, habits, and interaction history — moving beyond generic LLM responses toward genuine personalization.</p>
+        <p class="project-desc">Built with Mistral and a custom feedback loop architecture. Currently structured as a chatbot, evolving toward a full adaptive memory system.</p>
+        <div class="project-stack">
+          <span class="stack-tag">Python</span>
+          <span class="stack-tag">Mistral API</span>
+          <span class="stack-tag">Fine-tuning</span>
+          <span class="stack-tag">Prompt Engineering</span>
+          <span class="stack-tag">Feedback Loop</span>
+        </div>
+      </div>
+      <div class="project-visual">
+        <span style="position:relative;z-index:1;font-family:'Space Mono',monospace;font-size:1rem;color:var(--accent);text-align:center;line-height:2;">
+          &gt; xand.ai<br>
+          <span style="color:var(--accent3)">&gt; learning...<br></span>
+          <span style="color:var(--accent2)">&gt; adapting...</span>
+        </span>
+      </div>
+    </div>
+
+    <div class="project-card fade-in">
+      <div class="project-tag">🌐 Web App — Full Stack</div>
+      <h3 class="project-title">Flask Web App</h3>
+      <p class="project-desc">Full-stack web application with user authentication system — login, registration, and session management built with Flask as back-end. Responsive front-end with clean UI architecture.</p>
+      <div class="project-stack">
+        <span class="stack-tag">Flask</span>
+        <span class="stack-tag">HTML/CSS</span>
+        <span class="stack-tag">JavaScript</span>
+        <span class="stack-tag">Auth System</span>
+      </div>
+    </div>
+
+    <div class="project-card fade-in">
+      <div class="project-tag">📚 In Progress — ML</div>
+      <h3 class="project-title">ML Projects</h3>
+      <p class="project-desc">Hands-on machine learning projects from Andrew Ng's curriculum — covering supervised learning, neural networks, and MLOps practices. Portfolio expanding continuously.</p>
+      <div class="project-stack">
+        <span class="stack-tag">Python</span>
+        <span class="stack-tag">NumPy</span>
+        <span class="stack-tag">TensorFlow</span>
+        <span class="stack-tag">MLOps</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section id="skills">
+  <div class="section-label">03 — Skills</div>
+  <h2 class="section-title fade-in">Technical Stack</h2>
+  <div class="skills-grid">
+    <div class="skill-group fade-in">
+      <div class="skill-group-title">AI / Machine Learning</div>
+      <div class="skill-item"><span>Fine-tuning</span><div class="skill-bar-wrap"><div class="skill-bar" style="width:75%"></div></div></div>
+      <div class="skill-item"><span>Prompt Engineering</span><div class="skill-bar-wrap"><div class="skill-bar" style="width:82%"></div></div></div>
+      <div class="skill-item"><span>ML Fundamentals</span><div class="skill-bar-wrap"><div class="skill-bar" style="width:60%"></div></div></div>
+      <div class="skill-item"><span>AI Evaluation</span><div class="skill-bar-wrap"><div class="skill-bar" style="width:80%"></div></div></div>
+    </div>
+    <div class="skill-group fade-in">
+      <div class="skill-group-title">Development</div>
+      <div class="skill-item"><span>HTML / CSS / JS</span><div class="skill-bar-wrap"><div class="skill-bar" style="width:85%"></div></div></div>
+      <div class="skill-item"><span>Python / Flask</span><div class="skill-bar-wrap"><div class="skill-bar" style="width:72%"></div></div></div>
+      <div class="skill-item"><span>Software Architecture</span><div class="skill-bar-wrap"><div class="skill-bar" style="width:65%"></div></div></div>
+      <div class="skill-item"><span>Programming Logic</span><div class="skill-bar-wrap"><div class="skill-bar" style="width:88%"></div></div></div>
+    </div>
+    <div class="skill-group fade-in">
+      <div class="skill-group-title">Data & Languages</div>
+      <div class="skill-item"><span>English (C1 Reading)</span><div class="skill-bar-wrap"><div class="skill-bar" style="width:80%"></div></div></div>
+      <div class="skill-item"><span>Excel / Data Analysis</span><div class="skill-bar-wrap"><div class="skill-bar" style="width:70%"></div></div></div>
+      <div class="skill-item"><span>AI Data Lookup</span><div class="skill-bar-wrap"><div class="skill-bar" style="width:75%"></div></div></div>
+      <div class="skill-item"><span>Portuguese (Native)</span><div class="skill-bar-wrap"><div class="skill-bar" style="width:100%"></div></div></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section id="certs">
+  <div class="section-label">04 — Certifications</div>
+  <h2 class="section-title fade-in">Credentials</h2>
+  <div class="certs-list">
+    <div class="cert-item fade-in"><div class="cert-icon">🇬🇧</div><div><div class="cert-name">EF SET — English B2 (Reading C1)</div><div class="cert-org">EF Education First · 2025</div></div></div>
+    <div class="cert-item fade-in"><div class="cert-icon">🤖</div><div><div class="cert-name">Machine Learning Specialization</div><div class="cert-org">Andrew Ng — DeepLearning.AI · In Progress</div></div></div>
+    <div class="cert-item fade-in"><div class="cert-icon">💻</div><div><div class="cert-name">Front-end Development (×3)</div><div class="cert-org">Independent Courses · 2024–2025</div></div></div>
+    <div class="cert-item fade-in"><div class="cert-icon">⚙️</div><div><div class="cert-name">Programming Logic (×2)</div><div class="cert-org">Independent Courses · 2024–2025</div></div></div>
+    <div class="cert-item fade-in"><div class="cert-icon">🖥️</div><div><div class="cert-name">Software & Machine Architecture</div><div class="cert-org">Independent Courses · 2024–2025</div></div></div>
+    <div class="cert-item fade-in"><div class="cert-icon">📊</div><div><div class="cert-name">Data Analysis — Excel</div><div class="cert-org">Independent Courses · 2024–2025</div></div></div>
+    <div class="cert-item fade-in"><div class="cert-icon">🔍</div><div><div class="cert-name">AI-powered Data Lookup</div><div class="cert-org">Independent Courses · 2024–2025</div></div></div>
+    <div class="cert-item fade-in"><div class="cert-icon">🏆</div><div><div class="cert-name">High Abilities / Giftedness Program</div><div class="cert-org">Brazil State Education · Academic</div></div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section id="contact">
+  <div class="section-label">05 — Contact</div>
+  <div class="contact-wrap fade-in">
+    <div>
+      <h2 class="contact-title">Let's work<br><span>together.</span></h2>
+      <p class="contact-sub">Open to AI Evaluator roles, freelance projects, and ML/AI collaborations. Always interested in conversations about AI personalization and evaluation.</p>
+    </div>
+    <div class="contact-links">
+      <a href="mailto:alexandrecostadziubate501@gmail.com" class="contact-link">
+        <span class="contact-link-icon">✉</span>
+        alexandrecostadziubate501@gmail.com
+      </a>
+      <a href="https://www.linkedin.com/in/alexandre-dziubate" target="_blank" class="contact-link">
+        <span class="contact-link-icon">in</span>
+        linkedin.com/in/alexandre-dziubate
+      </a>
+      <a href="https://github.com/Alexer4" target="_blank" class="contact-link">
+        <span class="contact-link-icon">⌥</span>
+        github.com/Alexer4
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>© 2025 Alexandre Costa Dziubate</span>
+  <span>Built with intention — not a template.</span>
+</footer>
+
+<script>
+  const glow = document.getElementById('cursorGlow');
+  document.addEventListener('mousemove', e => {
+    glow.style.left = e.clientX + 'px';
+    glow.style.top = e.clientY + 'px';
+  });
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 100);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
